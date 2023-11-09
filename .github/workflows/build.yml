@@ -4,8 +4,8 @@ on:
   - pull_request
 
 jobs:
-  natives-linux-windows:
-    name: Linux (x86/ARM/PPC) and Windows native library compilation
+  natives-linux:
+    name: Linux (x86_64) native library compilation
     runs-on: ubuntu-latest
     container:
       image: ubuntu:18.04
@@ -31,12 +31,11 @@ jobs:
         run: |
           apt-get update
           apt-get --assume-yes install make $GCC
-          make crosstools
 
-      - name: Build the Linux and Windows native libraries
+      - name: Build the Linux native libraries (x86_64 only)
         run: |
-          make clean-linux clean-windows
-          make linux windows
+          make clean-linux
+          make linux64
 
       # The names of the artifacts containing native libraries correspond
       # exactly to the directories inside `src/main/c/resources/native`. That
@@ -52,85 +51,13 @@ jobs:
         with:
           name: linux
           path: src/main/c/resources/native/linux
-      - name: Upload Windows native libraries
-        uses: actions/upload-artifact@v3
-        with:
-          name: windows
-          path: src/main/c/resources/native/windows
-
-  natives-macos:
-    name: macOS native library compilation
-    runs-on: macos-latest
-
-    defaults:
-      run:
-        working-directory: src/main/c
-
-    steps:
-      - name: Checkout the target branch
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 8
-
-      - name: Build the macOS native libraries
-        run: |
-          make clean-osx
-          make osx
-
-      - name: Upload macOS native libraries
-        uses: actions/upload-artifact@v3
-        with:
-          name: osx
-          path: src/main/c/resources/native/osx/libNRJavaSerial.jnilib
-
-  natives-freebsd:
-    name: FreeBSD native library compilation
-    runs-on: ubuntu-latest
-    container:
-      image: empterdose/freebsd-cross-build:9.3
-
-    defaults:
-      run:
-        working-directory: src/main/c
-
-    steps:
-      - name: Checkout the target branch
-        uses: actions/checkout@v3
-      - name: Setup Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 8
-      - name: Fake the FreeBSD Java headers
-        # This feels extremely dirty, but the only native header we care about
-        # is `jni_md.h`, and it is exactly identical between Linux and FreeBSD
-        # (at least in OpenJDK 8).
-        run: |
-          ln -s $JAVA_HOME/include/linux $JAVA_HOME/include/freebsd
-
-      - name: Build the FreeBSD native libraries
-        run: |
-          make clean-freebsd
-          settarget i386-freebsd9 make freebsd32
-          settarget x86_64-freebsd9 make freebsd64
-
-      - name: Upload FreeBSD native libraries
-        uses: actions/upload-artifact@v3
-        with:
-          name: freebsd
-          path: src/main/c/resources/native/freebsd
 
   java:
     name: Java compilation
     runs-on: ubuntu-latest
 
     needs:
-      - natives-linux-windows
-      - natives-macos
-      - natives-freebsd
+      - natives-linux
 
     steps:
       # We use Spotless in “ratchet mode” to incrementally enforce code

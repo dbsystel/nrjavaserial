@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>de.bahn</groupId>
   <artifactId>nrjavaserial</artifactId>
-  <version>5.2.1+dbsystel1</version>
+  <version>5.2.1+dbsystel2</version>
   <name>NRJavaSerial</name>
   <description>A fork of the RXTX library with a focus on ease of use and embeddability in other libraries.</description>
   <url>http://neuronrobotics.com</url>

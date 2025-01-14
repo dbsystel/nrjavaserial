@@ -82,7 +82,7 @@ public class RXTXCommDriver implements CommDriver
 {
 	private static Set<String> ports =new HashSet<String>();
 	
-	private final static boolean debug = false;
+	private final static boolean debug = true;
 	private final static boolean devel = false;
 	private final static boolean noVersionOutput = "true".equals( System.getProperty( "gnu.io.rxtx.NoVersionOutput" ) );
 

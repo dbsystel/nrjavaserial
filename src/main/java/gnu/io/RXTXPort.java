@@ -124,7 +124,7 @@ public class RXTXPort extends SerialPort
 		}
 	}
 	protected boolean HARDWARE_FAULT=false;
-	protected final static boolean debug = false;
+	protected final static boolean debug = true;
 	protected final static boolean debug_read = false;
 	protected final static boolean debug_read_results = false;
 	protected final static boolean debug_write = false;
@@ -136,7 +136,7 @@ public class RXTXPort extends SerialPort
 	static
 	{
 		try {
-			z = new Zystem(Zystem.SILENT_MODE);
+			z = new Zystem(Zystem.PRINT_MODE);
 		} catch ( Exception e ) {}
 
 		if(debug ) 
